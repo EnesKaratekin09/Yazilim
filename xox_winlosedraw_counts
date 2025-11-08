@@ -1,0 +1,94 @@
+import random
+
+pl_win = 0
+pc_win = 0
+game_count = 0
+script_list = []
+
+def print_board(board):
+    # Tahtayı ekrana bas
+    print(" {} | {} | {} \n {} | {} | {} \n {} | {} | {} ".format(*board))
+
+def game():
+    global pl_win, pc_win, game_count
+    move_list = ["1","2","3","4","5","6","7","8","9"]
+    valid_move = move_list[:]
+    script = []
+    win = ""
+
+    def move(x,y):
+        move_list[int(x)-1] = str(y)
+        valid_move.remove(x)
+
+    def win_check():
+        wins = [
+            (0,1,2),(3,4,5),(6,7,8),
+            (0,3,6),(1,4,7),(2,5,8),
+            (0,4,8),(2,4,6)
+        ]
+        for a,b,c in wins:
+            if move_list[a] == move_list[b] == move_list[c] == "X":
+                return "You"
+            if move_list[a] == move_list[b] == move_list[c] == "O":
+                return "Computer"
+        return ""
+
+    while True:
+        # Player hamlesi
+        if valid_move:
+            plc = random.choice(valid_move)
+            move(plc,"X")
+            script.append(plc)
+            win = win_check()
+            if win == "You":
+                pl_win += 1
+                script.insert(0,"L")  # # Player kazandıysa L ekle
+                game_count += 1
+                return script
+        else:
+            # # Tahta doldu, berabere
+            script.insert(0,"D")
+            game_count += 1
+            return script
+
+        # Computer hamlesi
+        if valid_move:
+            aic = random.choice(valid_move)
+            move(aic,"O")
+            script.append(aic)
+            win = win_check()
+            if win == "Computer":
+                pc_win += 1
+                script.insert(0,"W")  # # Bilgisayar kazandıysa W ekle
+                game_count += 1
+                return script
+        else:
+            # # Tahta doldu, berabere
+            script.insert(0,"D")
+            game_count += 1
+            return script
+
+# --- Ana oyun döngüsü ---
+while game_count < 5000000:   # # 5 milyon oyun oyna
+    script = game()
+    script_list.append(script)
+
+# # Tekrar eden oyunları kaldır
+last_script_list = [list(t) for t in dict.fromkeys(tuple(i) for i in script_list)]
+
+# # Sonuçları ekrana yazdır
+#print(len(last_script_list))
+wincount=0
+losecount=0
+drawcount=0
+for lists in last_script_list:
+    for situation in lists:
+        if situation == "W":
+            wincount += 1
+        elif situation == "L":
+            losecount += 1
+        elif situation == "D":
+            drawcount += 1
+print(wincount)
+print(losecount)
+print(drawcount)
