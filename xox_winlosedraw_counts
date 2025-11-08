@@ -89,6 +89,6 @@ for lists in last_script_list:
             losecount += 1
         elif situation == "D":
             drawcount += 1
-print(wincount)
-print(losecount)
-print(drawcount)
+print("win",wincount)
+print("lose",losecount)
+print("draw",drawcount)
